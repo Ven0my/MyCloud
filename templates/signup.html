@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    CloudBox Login Page
+    CloudBox Signup Page
 {% endblock %}
 
 {% block content %}
@@ -9,20 +9,15 @@
           <div class="card-body">
               <h1 class="text-center">CloudBox</h1>
 
-              <h4 class="text-center mt-4">Login to your account</h4>
+              <h4 class="text-center mt-4">Create your account</h4>
 
-              {% if signupSuccess != '' %}
-                <div class="mt-5 alert alert-success" role="alert">
-                    {{ signupSuccess }}
-                </div>
-              {% endif %}
               {% if error != '' %}
                 <div class="mt-5 alert alert-danger" role="alert">
                     {{ error }}
                 </div>
               {% endif %}
 
-              <form method="post" action="/check_login">
+              <form method="post" action="/handle_signup">
                       <div class="form-group mt-5">
                         <label for="email">Email address</label>
                         <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
@@ -33,12 +28,12 @@
                         <input type="password" class="form-control" name="password" id="password">
                       </div>
                       <div class="text-center mt-5">
-                          <button type="submit" class="btn btn-primary">Login</button>
+                          <button type="submit" class="btn btn-primary">Sign Up</button>
                       </div>
                 </form>
 
               <div class="mt-5 text-center">
-                  Don't have an account? <a href="/signup">Sign Up</a></div>
+                  Already have an account? <a href="/login">Login</a></div>
 
           </div>
 </div>

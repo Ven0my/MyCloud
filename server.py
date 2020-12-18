@@ -1,3 +1,4 @@
+import  pymongo
 from flask import Flask, request, render_template, redirect, session
 from flask_pymongo import PyMongo
 from hashlib import sha256
@@ -27,7 +28,23 @@ def show_index():
         session['error'] = 'You must login again to access this page.'
         return redirect('/login')
 
-    return render_template('files.html')
+    userId = token_document['userId']
+
+    user = mongo.db.users.find_one({
+        '_id':userId
+    })
+
+    uploadedFiles = mongo.db.files.find({
+        'userID': userId,
+        'isActive': True
+    }).sort([("createdAt", pymongo.DESCENDING)])
+
+
+    return render_template(
+        'files.html',
+        uploadedFiles=uploadedFiles,
+        user=user
+    )
 
 @app.route('/login')
 def show_login():

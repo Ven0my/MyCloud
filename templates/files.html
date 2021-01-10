@@ -16,11 +16,22 @@ CloudBox List of Files
             <p>Uploaded Files</p>
         </div>
         <div class="col text-right">
-            <button type="button" class="btn btn-primary">
+            <button type="button"
+                    class="btn btn-primary"
+                    data-toggle="modal"
+                    data-target="#uploadModal"
+            >
                 Upload
             </button>
         </div>
     </div>
+
+    {% if error != '' %}
+                <div class="mt-5 alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+              {% endif %}
+
     <div class="mt-4">
         <table class="table table-striped table-bordered">
             <thead class="thead-light">
@@ -35,7 +46,7 @@ CloudBox List of Files
             {% for f in uploadedFiles %}
             <tr>
                 <td>
-                    {{ f['originalFileName'] }}
+                    {{ f['originalfileName'] }}
                 </td>
                 <td>
                     {{ f['fileSize'] }}
@@ -44,17 +55,25 @@ CloudBox List of Files
                     {{ f['createdAt'] }}
                 </td>
                 <td>
-                    <button type="button" class="btn btn-info">
+                    <button type="button" class="btn btn-info"
+                    data-toggle="modal"
+                    data-target="#shareModal"
+                    >
                         Share
                     </button>
                     <button type="button" class="btn btn-danger">
-                        Danger
+                        Delete
                     </button>
                 </td>
             </tr>
             {% endfor %}
             </tbody>
         </table>
+    </div>
+
+        {% include 'partial/upload-modal.html' %}
+        {% include 'partial/share-modal.html' %}
+
 </div>
 {% endblock %}
 

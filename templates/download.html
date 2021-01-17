@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+Download File-CloudBox
+{% endblock %}
+
+
+{% block content %}
+<div class="header">
+    {% include 'partial/header.html' %}
+</div>
+
+<div class="content text-center">
+    <p class="mt-4">Click on the button below to download the file: <b>{{ file['originalfileName'] }}</b></p>
+
+    <a class="btn btn-success" href="/download_file/{{ file['_id'] }}" target="_blank">
+        Download
+    </a>
+
+
+</div>
+{% endblock %}

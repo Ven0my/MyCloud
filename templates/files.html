@@ -55,13 +55,14 @@ CloudBox List of Files
                     {{ f['createdAt'] }}
                 </td>
                 <td>
-                    <button type="button" class="btn btn-info"
-                    data-toggle="modal"
-                    data-target="#shareModal"
-                    >
+                    <button type="button"
+                            class="btn btn-info btn-share-file"
+                            data-file-id="{{ f['_id'] }}"
+                            data-file-name="{{ f['originalfileName'] }}"
+                        >
                         Share
                     </button>
-                    <button type="button" class="btn btn-danger">
+                    <button type="button" class="btn btn-danger file_delete">
                         Delete
                     </button>
                 </td>
@@ -75,5 +76,8 @@ CloudBox List of Files
         {% include 'partial/share-modal.html' %}
 
 </div>
+{% endblock %}
+{% block scripts %}
+    <script src="static/files-page.js"></script>
 {% endblock %}
 

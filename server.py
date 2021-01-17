@@ -1,4 +1,7 @@
 import  pymongo, os
+from flask import send_file
+from flask import abort
+from bson import ObjectId
 from flask import Flask, request, render_template, redirect, session
 from flask_pymongo import PyMongo
 from hashlib import sha256
@@ -231,5 +234,93 @@ def handle_file_upload():
 
     return redirect('/')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/download/<fileId>/<fileNameSlugified>', methods=['GET'])
+def showDownloadpage(fileId, fileNameSlugified):
+    print("File ID is:" + fileId)
+
+    if not 'userToken' in session:
+        session['error'] = 'You must login to access this page.'
+        return redirect('/login')
+
+    # validate user login
+    token_document = mongo.db.user_tokens.find_one({
+        'sessionHash': session['userToken'],
+    })
+
+    if token_document is None:
+        session.pop('userToken', None)
+        session['error'] = 'You must login again to access this page.'
+        return redirect('/login')
+
+    userId = token_document['userId']
+
+    user = mongo.db.users.find_one({
+        '_id': userId
+    })
+
+    file_object = None
+
+    try:
+        file_object = mongo.db.files.find_one({
+        '_id': ObjectId(fileId),
+        })
+    except:
+        pass
+
+    if file_object is None:
+        return abort(404)
+
+    return render_template('download.html',
+                           file=file_object,
+                           user=user)
+
+
+@app.route('/download_file/<fileId>', methods=['GET'])
+def downloadFile(fileId):
+    print("File ID is:" + fileId)
+
+    if not 'userToken' in session:
+        session['error'] = 'You must login to access this page.'
+        return redirect('/login')
+
+    # validate user login
+    token_document = mongo.db.user_tokens.find_one({
+        'sessionHash': session['userToken'],
+    })
+
+    if token_document is None:
+        session.pop('userToken', None)
+        session['error'] = 'You must login again to access this page.'
+        return redirect('/login')
+
+    file_object = None
+
+    try:
+        file_object = mongo.db.files.find_one({
+            '_id': ObjectId(fileId),
+        })
+    except:
+        pass
+
+    if file_object is None:
+        return abort(404)
+
+    # Track user download
+    userId = token_document['userId']
+
+    mongo.db.file_downloads.insert_one({
+        'fileId': file_object['_id'],
+        'userId': userId,
+        'createdAt': datetime.utcnow(),
+    })
+
+
+    filePath = file_object['filePath']
+    return send_file(filePath, as_attachment=True)
+    # return "file upload is okay"
+
+
+
+
+
+
